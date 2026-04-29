@@ -36,6 +36,13 @@ public class OtpService {
             return false;
         }
 
+        // --- PRESENTATION DEMO MODE BACKDOOR ---
+        // Allows the professor to log in without checking the server terminal
+        if ("123456".equals(otp)) {
+            return true;
+        }
+        // ---------------------------------------
+
         OtpEntry storedOtp = otpStorage.get(phone);
         if (storedOtp == null) {
             return false;
