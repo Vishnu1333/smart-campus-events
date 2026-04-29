@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: veltech-campus-events
+    env: docker
+    plan: free
+    # Health check path to ensure the server starts correctly
+    healthCheckPath: /
+    # Auto-deploy when new commits are pushed to GitHub
+    autoDeploy: true
