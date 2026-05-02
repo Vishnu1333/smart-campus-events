@@ -56,6 +56,7 @@ public class EmailService {
             return true;
         } catch (Exception e) {
             System.err.println("Failed to send Email: " + e.getMessage());
+            e.printStackTrace();
             return false;
         }
     }

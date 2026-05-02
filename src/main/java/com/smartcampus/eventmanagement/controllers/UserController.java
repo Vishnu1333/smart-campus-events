@@ -116,7 +116,7 @@ public class UserController {
             otpService.clearOtp(identifier);
             pendingRegistrations.remove(identifier);
             return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
-                    .body(Map.of("message", "Could not send OTP right now. Please check settings and try again."));
+                    .body(Map.of("message", "SMTP Error: Gmail rejected the connection. Please check your App Password and ensure 2FA is enabled."));
         }
 
         return ResponseEntity.ok(Map.of("message", "OTP sent successfully to " + identifier));
