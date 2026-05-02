@@ -94,11 +94,20 @@ public class UserController {
         }
 
         String otp = otpService.generateOtp(identifier);
-        String messageText = "Your Vel Tech Event " + mode + " OTP is: " + otp + ". Valid for " + Math.max(1, otpTtlMinutes) + " minutes.";
+        String action = "register".equals(mode) ? "Registration" : "Login";
+        String messageText =
+                "Dear Student,\n\n" +
+                "Your One-Time Password (OTP) for " + action + " on the Vel Tech Campus Events Portal is:\n\n" +
+                "  " + otp + "\n\n" +
+                "This OTP is valid for " + Math.max(1, otpTtlMinutes) + " minute(s). Do not share it with anyone.\n\n" +
+                "If you did not request this OTP, please ignore this email.\n\n" +
+                "Regards,\n" +
+                "Vel Tech Campus Events Team\n" +
+                "Vel Tech Rangarajan Dr. Sagunthala R&D Institute of Science and Technology";
 
         boolean sentSuccessfully;
         if (isEmail) {
-            sentSuccessfully = emailService.sendEmail(identifier, "Vel Tech Campus Portal OTP", messageText);
+            sentSuccessfully = emailService.sendEmail(identifier, "Vel Tech Campus Events — Your OTP", messageText);
         } else {
             sentSuccessfully = smsService.sendSms(identifier, messageText);
         }
