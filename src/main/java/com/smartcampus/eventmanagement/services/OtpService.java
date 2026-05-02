@@ -24,50 +24,43 @@ public class OtpService {
         this.maxAttempts = Math.max(1, maxAttempts);
     }
 
-    public String generateOtp(String phone) {
+    public String generateOtp(String identifier) {
         String otp = String.format("%06d", secureRandom.nextInt(1_000_000));
-        otpStorage.put(phone, new OtpEntry(otp, Instant.now().plus(otpTtl)));
+        otpStorage.put(identifier, new OtpEntry(otp, Instant.now().plus(otpTtl)));
         clearExpiredOtps();
         return otp;
     }
 
-    public boolean validateOtp(String phone, String otp) {
-        if (phone == null || otp == null) {
+    public boolean validateOtp(String identifier, String otp) {
+        if (identifier == null || otp == null) {
             return false;
         }
 
-        // --- PRESENTATION DEMO MODE BACKDOOR ---
-        // Allows the professor to log in without checking the server terminal
-        if ("123456".equals(otp)) {
-            return true;
-        }
-        // ---------------------------------------
-
-        OtpEntry storedOtp = otpStorage.get(phone);
+        OtpEntry storedOtp = otpStorage.get(identifier);
         if (storedOtp == null) {
             return false;
         }
 
         if (storedOtp.isExpired()) {
-            otpStorage.remove(phone, storedOtp);
+            otpStorage.remove(identifier, storedOtp);
             return false;
         }
 
         int attempts = storedOtp.attempts.incrementAndGet();
         if (storedOtp.otp.equals(otp)) {
-            otpStorage.remove(phone);
+            otpStorage.remove(identifier);
             return true;
         }
 
         if (attempts >= maxAttempts) {
-            otpStorage.remove(phone, storedOtp);
+            otpStorage.remove(identifier, storedOtp);
         }
 
         return false;
     }
 
-    public void clearOtp(String phone) {
-        otpStorage.remove(phone);
+    public void clearOtp(String identifier) {
+        otpStorage.remove(identifier);
     }
 
     private void clearExpiredOtps() {

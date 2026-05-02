@@ -452,7 +452,6 @@
                                 <th>ID</th>
                                 <th>Student Name</th>
                                 <th>Email Address</th>
-                                <th>Phone Number</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
@@ -563,7 +562,6 @@
                         <td>#${user.id}</td>
                         <td class="user-name">${escapeHTML(user.name)}</td>
                         <td>${escapeHTML(user.email) || '<span style="color:#cbd5e1;">Not provided</span>'}</td>
-                        <td>${escapeHTML(user.phone) || '<span style="color:#cbd5e1;">Not provided</span>'}</td>
                         <td><span class="badge">Verified</span></td>
                     `;
                     tbody.appendChild(tr);

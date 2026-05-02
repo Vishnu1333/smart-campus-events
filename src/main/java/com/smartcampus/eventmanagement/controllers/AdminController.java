@@ -39,7 +39,6 @@ public class AdminController {
         List<User> users = userRepository.findAll();
         for (User user : users) {
             user.setPassword(null); 
-            user.setFirebaseUid(null);
         }
         return ResponseEntity.ok(users);
     }

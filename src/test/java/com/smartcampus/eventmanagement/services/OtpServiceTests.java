@@ -10,24 +10,24 @@ class OtpServiceTests {
     @Test
     void generatedOtpValidatesOnce() {
         OtpService otpService = new OtpService(5, 5);
-        String phone = "+919876543210";
+        String email = "test@veltech.edu.in";
 
-        String otp = otpService.generateOtp(phone);
+        String otp = otpService.generateOtp(email);
 
         assertTrue(otp.matches("\\d{6}"));
-        assertTrue(otpService.validateOtp(phone, otp));
-        assertFalse(otpService.validateOtp(phone, otp));
+        assertTrue(otpService.validateOtp(email, otp));
+        assertFalse(otpService.validateOtp(email, otp));
     }
 
     @Test
     void otpIsClearedAfterTooManyFailedAttempts() {
         OtpService otpService = new OtpService(5, 2);
-        String phone = "+919876543210";
-        String otp = otpService.generateOtp(phone);
+        String email = "test@veltech.edu.in";
+        String otp = otpService.generateOtp(email);
         String wrongOtp = otp.equals("000000") ? "111111" : "000000";
 
-        assertFalse(otpService.validateOtp(phone, wrongOtp));
-        assertFalse(otpService.validateOtp(phone, wrongOtp));
-        assertFalse(otpService.validateOtp(phone, otp));
+        assertFalse(otpService.validateOtp(email, wrongOtp));
+        assertFalse(otpService.validateOtp(email, wrongOtp));
+        assertFalse(otpService.validateOtp(email, otp));
     }
 }
