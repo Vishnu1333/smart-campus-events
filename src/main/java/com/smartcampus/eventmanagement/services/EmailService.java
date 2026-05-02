@@ -23,10 +23,8 @@ public class EmailService {
 
     @PostConstruct
     public void init() {
-        if (isBlank(mailHost)) {
-            System.out.println("EmailService: Running in MOCK mode. Emails will only be printed to console.");
-            isMockMode = true;
-        }
+        System.out.println("EmailService: Running in MOCK mode for presentation to prevent Render timeouts.");
+        isMockMode = true;
     }
 
     public boolean sendEmail(String toEmail, String subject, String text) {

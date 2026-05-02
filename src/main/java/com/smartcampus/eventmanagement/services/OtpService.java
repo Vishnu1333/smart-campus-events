@@ -25,7 +25,8 @@ public class OtpService {
     }
 
     public String generateOtp(String identifier) {
-        String otp = String.format("%06d", secureRandom.nextInt(1_000_000));
+        // STATIC OTP for presentation mode to bypass Render email blocks
+        String otp = "123456";
         otpStorage.put(identifier, new OtpEntry(otp, Instant.now().plus(otpTtl)));
         clearExpiredOtps();
         return otp;
