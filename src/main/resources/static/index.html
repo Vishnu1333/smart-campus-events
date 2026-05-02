@@ -882,7 +882,7 @@
                 <div id="otpStep" style="display: none;">
                     <div class="modal-header">
                         <h2 class="modal-title">Verify OTP</h2>
-                        <p class="modal-subtitle">Enter the 6-digit OTP sent to you.</p>
+                        <p class="modal-subtitle">Enter the 6-digit OTP sent to your email.</p>
                     </div>
                     <div class="form-message" id="otpMessage"></div>
                     <form id="otpForm" onsubmit="verifyOtp(event)">
@@ -895,6 +895,12 @@
                             Verify and Continue
                         </button>
                     </form>
+                    <div style="text-align: center; margin-top: 16px; font-size: 0.9rem; color: #6b7280;">
+                        <span id="resendCountdownText">Resend OTP in <strong id="resendTimer">60</strong>s</span>
+                        <button id="resendBtn" onclick="resendOtp()" style="display:none; background:none; border:none; color: var(--brand-blue-dark); font-weight: 600; cursor:pointer; font-size: 0.9rem; text-decoration: underline; padding: 0;">
+                            Resend OTP
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1041,18 +1047,13 @@
             btn.disabled = true;
 
             const name = document.getElementById('regName').value;
-            const email = currentAuthMethod === 'email' ? document.getElementById('regEmail').value : '';
-            let phone = '';
-            if (currentAuthMethod === 'phone') {
-                const phoneInput = document.getElementById('regPhone').value;
-                phone = '+91' + phoneInput.replace(/\D/g,'');
-            }
+            const email = document.getElementById('regEmail').value;
 
             try {
                 const res = await fetch('/api/auth/initiate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ mode: currentAuthMode, name, email, phone })
+                    body: JSON.stringify({ mode: currentAuthMode, name, email, phone: '' })
                 });
                 
                 const data = await res.json();
@@ -1062,12 +1063,62 @@
                 document.getElementById('otpStep').style.display = 'block';
                 showMessage('otpMessage', data.message || 'OTP sent successfully.', 'success');
                 setTimeout(() => document.getElementById('regOtp').focus(), 50);
+                startResendCountdown();
             } catch (err) {
                 showMessage('registerMessage', err.message, 'error');
             } finally {
                 btn.innerHTML = originalText;
                 btn.disabled = false;
                 feather.replace();
+            }
+        }
+
+        let resendInterval = null;
+
+        function startResendCountdown() {
+            clearInterval(resendInterval);
+            let seconds = 60;
+            const timerEl = document.getElementById('resendTimer');
+            const countdownText = document.getElementById('resendCountdownText');
+            const resendBtn = document.getElementById('resendBtn');
+
+            timerEl.textContent = seconds;
+            countdownText.style.display = 'inline';
+            resendBtn.style.display = 'none';
+
+            resendInterval = setInterval(() => {
+                seconds--;
+                timerEl.textContent = seconds;
+                if (seconds <= 0) {
+                    clearInterval(resendInterval);
+                    countdownText.style.display = 'none';
+                    resendBtn.style.display = 'inline';
+                }
+            }, 1000);
+        }
+
+        async function resendOtp() {
+            const email = document.getElementById('regEmail').value;
+            const name = document.getElementById('regName').value;
+            const resendBtn = document.getElementById('resendBtn');
+            resendBtn.textContent = 'Sending...';
+            resendBtn.disabled = true;
+
+            try {
+                const res = await fetch('/api/auth/initiate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ mode: currentAuthMode, name, email, phone: '' })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.message || 'Could not resend OTP.');
+                showMessage('otpMessage', 'OTP resent successfully! Check your email.', 'success');
+                document.getElementById('regOtp').value = '';
+                startResendCountdown();
+            } catch (err) {
+                showMessage('otpMessage', err.message, 'error');
+                resendBtn.textContent = 'Resend OTP';
+                resendBtn.disabled = false;
             }
         }
 
