@@ -863,15 +863,6 @@
                     </div>
                     <div class="form-message" id="registerMessage"></div>
                     
-                    <div style="margin-bottom: 18px; display: flex; gap: 20px; font-weight: 600; color: var(--brand-blue-dark); padding: 10px; background: #f2f5f9; border-radius: var(--radius);">
-                        <label style="cursor:pointer; display:flex; align-items:center; gap: 6px;">
-                            <input type="radio" name="authMethod" value="email" checked onchange="toggleAuthMethod()"> Email
-                        </label>
-                        <label style="cursor:pointer; display:flex; align-items:center; gap: 6px;">
-                            <input type="radio" name="authMethod" value="phone" onchange="toggleAuthMethod()"> Phone SMS
-                        </label>
-                    </div>
-
                     <form id="registerForm" onsubmit="submitAuth(event)">
                         <div class="form-group" id="nameGroup">
                             <label class="form-label" for="regName">Full Name</label>
@@ -879,12 +870,7 @@
                         </div>
                         <div class="form-group" id="emailGroup">
                             <label class="form-label" for="regEmail">Email Address</label>
-                            <input type="email" id="regEmail" class="form-input" required placeholder="student@example.com">
-                        </div>
-                        <div class="form-group" id="phoneGroup" style="display: none;">
-                            <label class="form-label" for="regPhone">Phone Number</label>
-                            <span class="phone-prefix">+91</span>
-                            <input type="tel" id="regPhone" class="form-input phone-input" placeholder="9876543210" pattern="\d{10}" title="Please enter exactly 10 digits">
+                            <input type="email" id="regEmail" class="form-input" required placeholder="student@veltech.edu.in">
                         </div>
                         <button type="submit" class="btn form-submit" id="regSubmitBtn">
                             <i data-feather="send" aria-hidden="true"></i>
@@ -902,8 +888,7 @@
                     <form id="otpForm" onsubmit="verifyOtp(event)">
                         <div class="form-group">
                             <label class="form-label" for="regOtp">Enter OTP</label>
-                            <input type="text" id="regOtp" class="form-input" required placeholder="123456" maxlength="6" pattern="\d{6}" inputmode="numeric" style="letter-spacing: 0.2em; text-align: center; font-size: 1.35rem;">
-                            <small style="display: block; text-align: center; margin-top: 8px; color: var(--gold); font-weight: 500;">(Demo Mode: Always use 123456)</small>
+                            <input type="text" id="regOtp" class="form-input" required placeholder="Enter 6-digit OTP" maxlength="6" pattern="\d{6}" inputmode="numeric" style="letter-spacing: 0.2em; text-align: center; font-size: 1.35rem;">
                         </div>
                         <button type="submit" class="btn form-submit" id="otpSubmitBtn">
                             <i data-feather="check-circle" aria-hidden="true"></i>
@@ -937,25 +922,6 @@
             showMessage('otpMessage', '', 'error');
         }
 
-        function toggleAuthMethod() {
-            currentAuthMethod = document.querySelector('input[name="authMethod"]:checked').value;
-            const emailGroup = document.getElementById('emailGroup');
-            const phoneGroup = document.getElementById('phoneGroup');
-            const emailInput = document.getElementById('regEmail');
-            const phoneInput = document.getElementById('regPhone');
-
-            if (currentAuthMethod === 'email') {
-                emailGroup.style.display = 'block';
-                phoneGroup.style.display = 'none';
-                emailInput.required = true;
-                phoneInput.required = false;
-            } else {
-                emailGroup.style.display = 'none';
-                phoneGroup.style.display = 'block';
-                emailInput.required = false;
-                phoneInput.required = true;
-            }
-        }
 
         fetch('/api/events')
             .then(res => {
