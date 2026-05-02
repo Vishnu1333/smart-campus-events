@@ -516,8 +516,14 @@
             background: #fff;
             border: 1px solid var(--line);
             border-radius: var(--radius);
-            box-shadow: var(--shadow);
+            box-shadow: 0 20px 60px rgba(10, 29, 55, 0.18), 0 4px 16px rgba(10, 29, 55, 0.10);
             position: relative;
+            animation: modalIn 0.22s cubic-bezier(.4,0,.2,1);
+        }
+
+        @keyframes modalIn {
+            from { transform: translateY(18px) scale(0.98); opacity: 0; }
+            to   { transform: translateY(0) scale(1); opacity: 1; }
         }
 
         .modal-close {
@@ -806,11 +812,11 @@
                 <div>
                     <div class="section-kicker">About the Portal</div>
                     <h2 class="section-title">Campus programs managed in one place</h2>
-                    <p class="section-copy">The Smart Campus Event Management System helps students find current events, view venue and schedule details, and complete phone-verified registration through Firebase OTP authentication.</p>
+                    <p class="section-copy">The Smart Campus Event Management System helps students discover upcoming academic, cultural, research, and student development events. Register securely using your college email with real-time OTP verification.</p>
                 </div>
                 <aside class="notice-panel">
-                    <strong>Registration verification</strong>
-                    Student login and registration are confirmed using a Firebase OTP sent to the registered mobile number.
+                    <strong>✉️ Email OTP Verification</strong>
+                    Student registration and login are secured with a one-time password (OTP) sent directly to your email address — no app download required.
                 </aside>
             </div>
         </section>
@@ -843,9 +849,12 @@
         <div class="footer-inner">
             <div>
                 <div class="footer-brand">Vel Tech Campus Events</div>
-                <div>Smart Campus Event Management System</div>
+                <div style="font-size: 0.82rem; margin-top: 4px; opacity: 0.7;">Smart Campus Event Management System</div>
             </div>
-            <div>&copy; 2026 Vel Tech Rangarajan Dr. Sagunthala R&D Institute of Science and Technology.</div>
+            <div style="text-align: right;">
+                <div>&copy; 2026 Vel Tech Rangarajan Dr. Sagunthala R&D Institute of Science and Technology.</div>
+                <div style="font-size: 0.82rem; margin-top: 4px; opacity: 0.7;">✉️ veltechcampusevents@gmail.com</div>
+            </div>
         </div>
     </footer>
 
@@ -1010,11 +1019,10 @@
             const isLogin = currentAuthMode === 'login';
             document.getElementById('registrationTitle').textContent = isLogin ? 'Login' : 'Register';
             document.getElementById('authSubtitle').textContent = isLogin
-                ? 'Enter your registered details to receive an OTP.'
+                ? 'Enter your registered email to receive an OTP.'
                 : 'Enter your details to receive a verification OTP.';
             document.getElementById('nameGroup').style.display = isLogin ? 'none' : 'block';
             document.getElementById('regName').required = !isLogin;
-            
             document.getElementById('regSubmitText').textContent = isLogin ? 'Send Login OTP' : 'Send Registration OTP';
 
             document.getElementById('registerModal').classList.add('active');
@@ -1022,15 +1030,15 @@
             document.getElementById('otpStep').style.display = 'none';
             document.getElementById('registerForm').reset();
             document.getElementById('otpForm').reset();
-            
-            toggleAuthMethod();
+
+            // Stop any existing resend countdown
+            clearInterval(resendInterval);
 
             setTimeout(() => {
                 if (!isLogin) document.getElementById('regName').focus();
-                else if (currentAuthMethod === 'email') document.getElementById('regEmail').focus();
-                else document.getElementById('regPhone').focus();
+                else document.getElementById('regEmail').focus();
             }, 50);
-            
+
             feather.replace();
         }
 
